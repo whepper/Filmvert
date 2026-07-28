@@ -302,6 +302,7 @@ std::optional<nlohmann::json> image::getJSONMeta() {
         fvParams["ocioView"] = imgParam.ocioView;
         fvParams["useDisplay"] = imgParam.useDisplay;
         fvParams["inverse"] = imgParam.inverse;
+        fvParams["gamutComp"] = imgParam.gamutComp;
 
         metaParams = imgMeta;
         std::string version = std::to_string(VERMAJOR) + "." + std::to_string(VERMINOR) + "." + std::to_string(VERPATCH);
@@ -539,6 +540,7 @@ void image::metaPaste(copyPaste selectons, imageParams* params, imageMetadata* m
             imgParam.ocioView = impParams.ocioView;
             imgParam.useDisplay = impParams.useDisplay;
             imgParam.inverse = impParams.inverse;
+            imgParam.gamutComp = impParams.gamutComp;
         }
         if (selectons.baseColor) {
             imgParam.baseColor[0] = impParams.baseColor[0];
@@ -753,6 +755,9 @@ void image::loadParamJSONObj(imageParams* imgParam, copyPaste *&pasteOpts, nlohm
         if (obj.contains("inverse")) {
             imgParam->inverse = obj["inverse"].get<bool>();
         }
+        if (obj.contains("gamutComp")) {
+            imgParam->gamutComp = obj["gamutComp"].get<bool>();
+        }
         if ((imgParam->ocioColor != -1 && !imgParam->useDisplay) ||
             (imgParam->ocioDisp != -1 && imgParam->ocioView != -1 && imgParam->useDisplay)) {
             // We have an ocio name, and a valid selection
@@ -928,6 +933,16 @@ void image::loadParamJSONObj(imageParams* imgParam, copyPaste *&pasteOpts, nlohm
         if (pasteOpts->fromLoad)
             pasteOpts->imageCrop = true;
         imgParam->cropEnable = obj["cropEnable"].get<int>();
+    }
+    if (obj.contains("lockAspect")) {
+        if (pasteOpts->fromLoad)
+            pasteOpts->imageCrop = true;
+        imgParam->lockAspect = obj["lockAspect"].get<int>();
+    }
+    if (obj.contains("imageCropAspect")) {
+        if (pasteOpts->fromLoad)
+            pasteOpts->imageCrop = true;
+        imgParam->imageCropAspect = obj["imageCropAspect"].get<float>();
     }
 
 }

@@ -127,7 +127,7 @@ void mainWindow::paramView() {
                             }
                             ImGui::SameLine();
                             if (ImGui::Button("Apply Crop", ImVec2(applyCropW, 0))) {
-                                paramChange |= true; cropVisible = false; activeImage()->imgParam.cropEnable = true;
+                                paramChange |= true; cropVisible = false; activeImage()->imgParam.cropEnable = true; firstImage = true;
                             }
                             ImGui::SameLine();
                             if (ImGui::Button("Reset Crop", ImVec2(rstCropW, 0))) {

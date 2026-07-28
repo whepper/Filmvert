@@ -170,7 +170,7 @@ void mainWindow::windowCrop(ImVec2 &imagePos, bool &dragging, bool &isInteractin
 
             // Handle corner dragging
             if (handleHovered && ImGui::IsMouseClicked(ImGuiMouseButton_Left) &&
-                !draggingImageCrop) {
+                !draggingImageCrop && !popupCheck()) {
                 draggingImageCrop = true;
                 draggedCropHandle = i;
                 dragStartMouse = mousePos;
@@ -204,7 +204,7 @@ void mainWindow::windowCrop(ImVec2 &imagePos, bool &dragging, bool &isInteractin
         }
 
         if (insideCrop && ImGui::IsMouseClicked(ImGuiMouseButton_Left) &&
-            !draggingImageCrop && draggedCropHandle == -1 && !dragging) {
+            !draggingImageCrop && draggedCropHandle == -1 && !dragging && !popupCheck()) {
             draggingImageCrop = true;
             draggedCropHandle = 4; // 4 means dragging entire rectangle
             dragStartMouse = mousePos;

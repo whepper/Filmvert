@@ -629,19 +629,6 @@ void mainWindow::imageView() {
                 currentlyInteracting = true;
             }
 
-            if ((ImGui::IsKeyPressed(ImGuiKey_H) && !ImGui::IsKeyPressed(ImGuiMod_Ctrl)) || firstImage) {
-                dispScale = 0.98f;
-                actualScale = baseScale * dispScale;
-                // Recompute dispSize for the reset scale so centering is accurate
-                float resetEffScale = (activeImage()->imageLoaded && !toggleProxy && !activeImage()->reloading)
-                                      ? actualScale
-                                      : actualScale / appPrefs.prefs.proxyRes;
-                ImVec2 resetDispSize = ImVec2(resetEffScale * displayWidth, resetEffScale * displayHeight);
-                viewOffset.x = (imageWinSize.x - resetDispSize.x) * 0.5f;
-                viewOffset.y = (imageWinSize.y - resetDispSize.y) * 0.5f;
-                currentlyInteracting = true;
-                firstImage = false;
-            }
 
             // Panning: no clamping, image can extend beyond window edges
             if ((ImGui::IsMouseDragging(ImGuiMouseButton_Left, 0.0f) || ImGui::IsMouseDragging(ImGuiMouseButton_Middle, 0.0f)) &&
@@ -650,6 +637,20 @@ void mainWindow::imageView() {
                 viewOffset.y += ImGui::GetIO().MouseDelta.y;
                 currentlyInteracting = true;
             }
+        }
+
+        if ((ImGui::IsKeyPressed(ImGuiKey_H) && !ImGui::IsKeyPressed(ImGuiMod_Ctrl)) || firstImage) {
+            dispScale = 0.98f;
+            actualScale = baseScale * dispScale;
+            // Recompute dispSize for the reset scale so centering is accurate
+            float resetEffScale = (activeImage()->imageLoaded && !toggleProxy && !activeImage()->reloading)
+                                  ? actualScale
+                                  : actualScale / appPrefs.prefs.proxyRes;
+            ImVec2 resetDispSize = ImVec2(resetEffScale * displayWidth, resetEffScale * displayHeight);
+            viewOffset.x = (imageWinSize.x - resetDispSize.x) * 0.5f;
+            viewOffset.y = (imageWinSize.y - resetDispSize.y) * 0.5f;
+            currentlyInteracting = true;
+            firstImage = false;
         }
 
         // Pixel value inspector — shown as a tooltip when Alt is held and the

@@ -64,6 +64,7 @@ void mainWindow::importRawSettings() {
 */
 void mainWindow::importIDTSetting() {
     //ImGui::Separator();
+    importOCIO.ocioConfig = appPrefs.prefs.ocioExt;
     ImGui::SetNextItemOpen(false, ImGuiCond_Once);
     if (ImGui::TreeNode("Image Input Colorspace Setting")) {
         ImGui::Combo("###CSO", &ocioCS_Disp, colorspaceSet.data(), colorspaceSet.size());
@@ -141,8 +142,19 @@ void mainWindow::importImagePopup() {
             ImGui::SameLine();
             if (ImGui::Button("Browse")) {
                 auto result = ShowFolderSelectionDialog(false);
-                if (!result.empty())
+                if (!result.empty()){
                     strcpy(rollPath, result[0].c_str());
+                    std::string rollNameBufString = rollNameBuf;
+                    if (rollNameBufString.empty()) {
+                        // Folder selected, but roll name empty.
+                        // Auto-populate roll name based on last folder name
+                        std::filesystem::path selFolderPath = result[0];
+                        std::string selFolderName = selFolderPath.filename().string();
+                        if (selFolderName.length() < 64)
+                            strcpy(rollNameBuf, selFolderName.c_str());
+                    }
+                }
+
             }
             if (ImGui::Button("Cancel")) {
                 newRollPopup = false;
@@ -442,6 +454,7 @@ void mainWindow::batchRenderPopup() {
     if (exportPopup)
         ImGui::OpenPopup("Export Image(s)");
     if (ImGui::BeginPopupModal("Export Image(s)", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoResize)){
+        exportOCIO.ocioConfig = appPrefs.prefs.ocioExt;
         const float sideMargin   = 4.0f;
         const float childPadding = 8.0f;
         const float childRound   = 6.0f;
